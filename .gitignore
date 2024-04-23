@@ -1,0 +1,7 @@
+.env
+.vscode
+__pycache__
+out
+venv
+datasette/*.db
+datasette/*.csv
