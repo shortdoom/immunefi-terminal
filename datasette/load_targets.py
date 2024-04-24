@@ -7,7 +7,8 @@ import build_targets
 # Define the directory containing your JSON files
 current_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(current_directory)
-json_directory = os.path.join(parent_directory, 'targets', 'project')
+json_directory = os.path.join(parent_directory, "targets", "project")
+
 
 def connect_db():
     """Connects to the SQLite database and creates tables if they don't exist."""
@@ -24,7 +25,12 @@ def connect_db():
         launchDate TEXT,
         endDate TEXT,
         updatedDate TEXT,
-        kyc BOOLEAN
+        kyc BOOLEAN,
+        programOverview TEXT,
+        prioritizedVulnerabilities TEXT,
+        rewardsBody TEXT,
+        outOfScopeAndRules TEXT,
+        assetsBodyV2 TEXT
     )
     """
     )
@@ -75,31 +81,12 @@ def connect_db():
         CREATE TABLE IF NOT EXISTS targets (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             bountyId TEXT,
+            network TEXT,
             target TEXT,
             updatedDate TEXT,
             FOREIGN KEY (bountyId) REFERENCES bounties(bountyId)
         )
         """
-    )
-    
-    # NOTE: When inserting data into the scan_results table, make sure to insert the target_id from targets as well
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS scan_results (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            check_type TEXT,
-            confidence TEXT,
-            contract TEXT,
-            description TEXT,
-            expressions TEXT,
-            full_name TEXT,
-            impact TEXT,
-            lines TEXT,
-            target TEXT,
-            target_id INTEGER,
-            FOREIGN KEY(target_id) REFERENCES targets(id)
-        )
-    """
     )
 
     return conn, cursor
@@ -117,7 +104,7 @@ def insert_or_update_data(cursor, bounty):
             cursor.execute(
                 """
                 UPDATE bounties
-                SET slug=?, project=?, maxBounty=?, launchDate=?, endDate=?, updatedDate=?, kyc=?
+                SET slug=?, project=?, maxBounty=?, launchDate=?, endDate=?, updatedDate=?, kyc=?, programOverview=?, prioritizedVulnerabilities=?, rewardsBody=?, outOfScopeAndRules=?, assetsBodyV2=?
                 WHERE bountyId=?
             """,
                 (
@@ -129,6 +116,12 @@ def insert_or_update_data(cursor, bounty):
                     bounty["updatedDate"],
                     bounty["kyc"],
                     bounty["id"],
+                    # ADDED
+                    bounty["programOverview"],
+                    bounty["prioritizedVulnerabilities"],
+                    bounty["rewardsBody"],
+                    bounty["outOfScopeAndRules"],
+                    bounty["assetsBodyV2"],
                 ),
             )
             update_nested_data(cursor, bounty["id"], bounty)
@@ -136,8 +129,8 @@ def insert_or_update_data(cursor, bounty):
         print("Inserting:", bounty["id"])
         cursor.execute(
             """
-            INSERT INTO bounties (bountyId, slug, project, maxBounty, launchDate, endDate, updatedDate, kyc)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO bounties (bountyId, slug, project, maxBounty, launchDate, endDate, updatedDate, kyc, programOverview, prioritizedVulnerabilities, rewardsBody, outOfScopeAndRules, assetsBodyV2)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
             (
                 bounty["id"],
@@ -148,6 +141,12 @@ def insert_or_update_data(cursor, bounty):
                 bounty["endDate"],
                 bounty["updatedDate"],
                 bounty["kyc"],
+                # ADDED
+                bounty["programOverview"],
+                bounty["prioritizedVulnerabilities"],
+                bounty["rewardsBody"],
+                bounty["outOfScopeAndRules"],
+                bounty["assetsBodyV2"],
             ),
         )
         insert_nested_data(cursor, bounty["id"], bounty)
@@ -208,8 +207,8 @@ def update_nested_data(cursor, bounty_id, bounty):
     cursor.execute("DELETE FROM assets WHERE bountyId = ?", (bounty_id,))
     cursor.execute("DELETE FROM impacts WHERE bountyId = ?", (bounty_id,))
     insert_nested_data(cursor, bounty_id, bounty)
-
-
+ 
+        
 def process_json_files(cursor, json_directory):
     for filename in os.listdir(json_directory):
         if filename.endswith(".json"):
@@ -223,6 +222,20 @@ def main():
     conn, cursor = connect_db()
     try:
         process_json_files(cursor, json_directory)
+
+        cursor.execute(
+            """
+            SELECT name FROM sqlite_master WHERE type='view' AND name='quick_view';
+            """
+        )
+        
+        if cursor.fetchone() is None:
+            cursor.execute(
+                """
+                CREATE VIEW quick_view AS SELECT bountyId, programOverview, assetsBodyV2 FROM bounties;
+                """
+            )
+            
     finally:
         conn.commit()
         conn.close()

@@ -2,21 +2,21 @@
   "databases": {
     "immunefi_data": {
       "queries": {
-        "targets_paths": {
-          "sql": "SELECT bountyId, target FROM targets WHERE updatedDate BETWEEN date('now', '-3 days') AND date('now')",
-          "description": "THE MEAT IS BACK ON THE MENU BOYS"
+        "SELECT_DATE_RANGE": {
+          "sql": "SELECT a.id, a.bountyId, a.type, a.url, a.description, a.isPrimacyOfImpact, b.updatedDate FROM assets a JOIN bounties b ON a.bountyId = b.bountyId WHERE b.updatedDate BETWEEN :start_date AND :end_date;",
+          "description": "Show data for targets updated between specified dates"
         },
-        "targets_select": {
-          "sql": "SELECT a.id, a.bountyId, a.type, a.url, a.description, a.isPrimacyOfImpact, b.updatedDate FROM assets a JOIN bounties b ON a.bountyId = b.bountyId WHERE b.updatedDate > '2024-01-01' AND a.type = 'smart_contract' AND a.url NOT LIKE '%github%';",
-          "description": "Build a view of the latest updates to smart contracts bounties that are not hosted on GitHub"
+        "TARGETS_ONCHAIN_COUNT": {
+          "sql": "SELECT COUNT(*) FROM assets a JOIN bounties b ON a.bountyId = b.bountyId WHERE a.type = 'smart_contract' AND a.url NOT LIKE '%github%';",
+          "description": "Count all targets available on-chain"
         },
-        "targets_from_last_3_days": {
-          "sql": "SELECT a.id, a.bountyId, a.type, a.url, a.description, a.isPrimacyOfImpact, b.updatedDate FROM assets a JOIN bounties b ON a.bountyId = b.bountyId WHERE b.updatedDate BETWEEN date('now', '-3 days') AND date('now') AND a.type = 'smart_contract' AND a.url NOT LIKE '%github%';",
-          "description": "Show data for targets updated in the last 3 days"
+        "TARGETS_TYPES_COUNT": {
+          "sql": "SELECT type, COUNT(*) as count FROM assets GROUP BY type;",
+          "description": "Count all types of bug bounties"
         },
-        "targets_addresses_count": {
-          "sql": "SELECT COUNT(*) FROM assets a JOIN bounties b ON a.bountyId = b.bountyId WHERE b.updatedDate > '2024-01-01' AND a.type = 'smart_contract' AND a.url NOT LIKE '%github%';",
-          "description": "Count all target addresses meeting the query criteria"
+        "TARGETS_NETWORK_COUNT": {
+          "sql": "SELECT network, COUNT(*) as count FROM targets GROUP BY network ORDER BY count DESC;",
+          "description": "Count all networks of target addresses and order by count"
         }
       }
     }
