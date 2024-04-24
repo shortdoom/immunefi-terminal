@@ -16,7 +16,7 @@ def connect_db():
     cursor = conn.cursor()
 
     cursor.execute(
-        """
+    """
     CREATE TABLE IF NOT EXISTS bounties (
         bountyId TEXT PRIMARY KEY,
         slug TEXT,
@@ -36,7 +36,7 @@ def connect_db():
     )
 
     cursor.execute(
-        """
+    """
     CREATE TABLE IF NOT EXISTS rewards (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         bountyId TEXT,
@@ -50,7 +50,7 @@ def connect_db():
     )
 
     cursor.execute(
-        """
+    """
     CREATE TABLE IF NOT EXISTS assets (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         bountyId TEXT,
@@ -64,7 +64,7 @@ def connect_db():
     )
 
     cursor.execute(
-        """
+    """
     CREATE TABLE IF NOT EXISTS impacts (
         impactId INTEGER PRIMARY KEY AUTOINCREMENT,
         bountyId TEXT,
@@ -75,18 +75,30 @@ def connect_db():
     )
     """
     )
+    
+    cursor.execute(
+    """
+    CREATE TABLE IF NOT EXISTS tags (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        bountyId TEXT,
+        tag_type TEXT,
+        tag_value TEXT,
+        FOREIGN KEY (bountyId) REFERENCES bounties(bountyId)
+    )
+    """
+    )
 
     cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS targets (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            bountyId TEXT,
-            network TEXT,
-            target TEXT,
-            updatedDate TEXT,
-            FOREIGN KEY (bountyId) REFERENCES bounties(bountyId)
-        )
-        """
+    """
+    CREATE TABLE IF NOT EXISTS targets (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        bountyId TEXT,
+        network TEXT,
+        target TEXT,
+        updatedDate TEXT,
+        FOREIGN KEY (bountyId) REFERENCES bounties(bountyId)
+    )
+    """
     )
 
     return conn, cursor
@@ -200,8 +212,23 @@ def insert_nested_data(cursor, bounty_id, bounty):
                     item.get("severity"),
                 ),
             )
-
-
+    
+        if "tags" in bounty:
+            for tag_type, tag_values in bounty["tags"].items():
+                if tag_values is not None:  # Add this check
+                    for tag_value in tag_values:
+                        cursor.execute(
+                            """
+                            INSERT INTO tags (bountyId, tag_type, tag_value)
+                            VALUES (?, ?, ?)
+                            """,
+                            (
+                                bounty_id,
+                                tag_type,
+                                tag_value,
+                            ),
+                        )
+                
 def update_nested_data(cursor, bounty_id, bounty):
     cursor.execute("DELETE FROM rewards WHERE bountyId = ?", (bounty_id,))
     cursor.execute("DELETE FROM assets WHERE bountyId = ?", (bounty_id,))
