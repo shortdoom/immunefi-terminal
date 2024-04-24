@@ -1,10 +1,8 @@
-# datasettte serve test_data.db
 import json
 import sqlite3
 import os
 import build_targets
 
-# Define the directory containing your JSON files
 current_directory = os.path.dirname(os.path.abspath(__file__))
 parent_directory = os.path.dirname(current_directory)
 json_directory = os.path.join(parent_directory, "targets", "project")
@@ -19,18 +17,17 @@ def connect_db():
     """
     CREATE TABLE IF NOT EXISTS bounties (
         bountyId TEXT PRIMARY KEY,
-        slug TEXT,
+        programOverview TEXT,
+        prioritizedVulnerabilities TEXT,
+        rewardsBody TEXT,
+        outOfScopeAndRules TEXT,
+        assetsBodyV2 TEXT,
         project TEXT,
         maxBounty INTEGER,
         launchDate TEXT,
         endDate TEXT,
         updatedDate TEXT,
-        kyc BOOLEAN,
-        programOverview TEXT,
-        prioritizedVulnerabilities TEXT,
-        rewardsBody TEXT,
-        outOfScopeAndRules TEXT,
-        assetsBodyV2 TEXT
+        kyc BOOLEAN
     )
     """
     )
@@ -101,6 +98,16 @@ def connect_db():
     """
     )
 
+    cursor.execute(
+    """
+    CREATE TABLE IF NOT EXISTS updates (
+        bountyId TEXT PRIMARY KEY,
+        updatedDate TEXT,
+        FOREIGN KEY (bountyId) REFERENCES bounties(bountyId)
+    )
+    """
+    )
+
     return conn, cursor
 
 
@@ -116,11 +123,15 @@ def insert_or_update_data(cursor, bounty):
             cursor.execute(
                 """
                 UPDATE bounties
-                SET slug=?, project=?, maxBounty=?, launchDate=?, endDate=?, updatedDate=?, kyc=?, programOverview=?, prioritizedVulnerabilities=?, rewardsBody=?, outOfScopeAndRules=?, assetsBodyV2=?
+                SET programOverview=?, prioritizedVulnerabilities=?, rewardsBody=?, outOfScopeAndRules=?, assetsBodyV2=?, project=?, maxBounty=?, launchDate=?, endDate=?, updatedDate=?, kyc=?
                 WHERE bountyId=?
             """,
                 (
-                    bounty["slug"],
+                    bounty["programOverview"],
+                    bounty["prioritizedVulnerabilities"],
+                    bounty["rewardsBody"],
+                    bounty["outOfScopeAndRules"],
+                    bounty["assetsBodyV2"],
                     bounty["project"],
                     bounty["maxBounty"],
                     bounty["launchDate"],
@@ -128,12 +139,17 @@ def insert_or_update_data(cursor, bounty):
                     bounty["updatedDate"],
                     bounty["kyc"],
                     bounty["id"],
-                    # ADDED
-                    bounty["programOverview"],
-                    bounty["prioritizedVulnerabilities"],
-                    bounty["rewardsBody"],
-                    bounty["outOfScopeAndRules"],
-                    bounty["assetsBodyV2"],
+                ),
+            )
+            cursor.execute("DELETE FROM updates WHERE bountyId = ?", (bounty["id"],))
+            cursor.execute(
+                """
+                INSERT INTO updates (bountyId, updatedDate)
+                VALUES (?, ?)
+            """,
+                (
+                    bounty["id"],
+                    bounty["updatedDate"],
                 ),
             )
             update_nested_data(cursor, bounty["id"], bounty)
@@ -141,24 +157,22 @@ def insert_or_update_data(cursor, bounty):
         print("Inserting:", bounty["id"])
         cursor.execute(
             """
-            INSERT INTO bounties (bountyId, slug, project, maxBounty, launchDate, endDate, updatedDate, kyc, programOverview, prioritizedVulnerabilities, rewardsBody, outOfScopeAndRules, assetsBodyV2)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO bounties (bountyId, programOverview, prioritizedVulnerabilities, rewardsBody, outOfScopeAndRules, assetsBodyV2, project, maxBounty, launchDate, endDate, updatedDate, kyc)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
             (
                 bounty["id"],
-                bounty["slug"],
+                bounty["programOverview"],
+                bounty["prioritizedVulnerabilities"],
+                bounty["rewardsBody"],
+                bounty["outOfScopeAndRules"],
+                bounty["assetsBodyV2"],
                 bounty["project"],
                 bounty["maxBounty"],
                 bounty["launchDate"],
                 bounty["endDate"],
                 bounty["updatedDate"],
                 bounty["kyc"],
-                # ADDED
-                bounty["programOverview"],
-                bounty["prioritizedVulnerabilities"],
-                bounty["rewardsBody"],
-                bounty["outOfScopeAndRules"],
-                bounty["assetsBodyV2"],
             ),
         )
         insert_nested_data(cursor, bounty["id"], bounty)
@@ -234,8 +248,7 @@ def update_nested_data(cursor, bounty_id, bounty):
     cursor.execute("DELETE FROM assets WHERE bountyId = ?", (bounty_id,))
     cursor.execute("DELETE FROM impacts WHERE bountyId = ?", (bounty_id,))
     insert_nested_data(cursor, bounty_id, bounty)
- 
-        
+         
 def process_json_files(cursor, json_directory):
     for filename in os.listdir(json_directory):
         if filename.endswith(".json"):
@@ -243,7 +256,6 @@ def process_json_files(cursor, json_directory):
                 data = json.load(file)
                 bounty = data["pageProps"]["bounty"]
                 insert_or_update_data(cursor, bounty)
-
 
 def main():
     conn, cursor = connect_db()

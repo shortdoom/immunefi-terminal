@@ -2,13 +2,10 @@ import subprocess
 import os
 
 def execute_git_pull(projects_directory):
-    # Change the current working directory
     os.chdir(projects_directory)
 
-    # Execute git pull origin main
     result = subprocess.run(['git', 'pull', 'origin', 'main'], capture_output=True, text=True)
 
-    # Check if there are any updates
     if "Already up to date." not in result.stdout:
         print("Updates found.")
         print(result.stdout)
@@ -17,7 +14,6 @@ def execute_git_pull(projects_directory):
         print("No updates found.")
 
 def execute_load_targets():
-    # Execute load_targets.py
     os.chdir(datasette_directory)
     subprocess.run(['python', 'load_targets.py'])
 
@@ -34,3 +30,4 @@ projects_directory = os.path.join(parent_directory, 'targets')
 
 # Execute the git pull command in the specified directory
 execute_git_pull(projects_directory)
+# execute_load_targets()
