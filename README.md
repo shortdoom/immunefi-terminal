@@ -10,8 +10,8 @@ The only crypto bug bounty terminal you'll ever need.
 6. Guaranteed compilation of on-chain targets with *patched* crytic-compile.
 7. Publish your data with Datasette.
 
-Live demo: 
-
+![Example views](docs/view.png)
+ 
 ## Installation
 
 Manually:
@@ -80,4 +80,4 @@ https://github.com/tintinweb/bugbounty-companion
 
 ## End
 
-Contact on Twitter for paid work. Specializing in blockchain engineering, security, automation. Python, Solidity, JS, and TS focus.
+Contact on Twitter for paid work. Blockchain engineering, security, automation. Python, Solidity, JS, and TS focus.
