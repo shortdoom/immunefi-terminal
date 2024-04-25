@@ -4,4 +4,4 @@ __pycache__
 files/*
 venv
 *.db
-*.csv
+datasette/*.csv

@@ -26,6 +26,8 @@ With `setup.sh`:
 
 `./setup.sh`
 
+Remember to activate your selected python interpreter in the vscode terminal.
+
 ## Running the Dashboard
 
 Execute `python run.py` to initialize the database. This will serve you a dashboard at `127.0.0.1:8001`.
