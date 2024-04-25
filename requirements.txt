@@ -2,11 +2,16 @@ aiofiles==23.2.1
 anyio==4.3.0
 asgi-csrf==0.9
 asgiref==3.8.1
+cbor2==5.6.3
 certifi==2024.2.2
+charset-normalizer==3.3.2
 click==8.1.7
 click-default-group==1.2.4
+crytic-compile @ git+https://github.com/crytic/crytic-compile.git@b5c538aaa66be44b7a68d9723881a7eba2c20898
 datasette==0.64.6
 datasette-query-history==0.2.3
+gitdb==4.0.11
+GitPython==3.1.43
 h11==0.14.0
 httpcore==1.0.5
 httpx==0.27.0
@@ -17,11 +22,17 @@ janus==1.0.0
 Jinja2==3.1.3
 MarkupSafe==2.1.5
 mergedeep==1.3.4
+packaging==24.0
 Pint==0.23
 pluggy==1.5.0
+pycryptodome==3.20.0
 python-multipart==0.0.9
 PyYAML==6.0.1
+requests==2.31.0
 setuptools==69.5.1
+smmap==5.0.1
 sniffio==1.3.1
+solc-select==1.0.4
 typing_extensions==4.11.0
+urllib3==2.2.1
 uvicorn==0.29.0
