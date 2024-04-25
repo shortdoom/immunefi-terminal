@@ -14,11 +14,15 @@ The only crypto bug bounty terminal you'll ever need.
  
 ## Installation
 
-Manually:
+**Manually:**
 
-Create a new Python environment, e.g., `python3 -m venv venv`.
+Create a new Python environment, e.g., `python3 -m venv venv`
 
-Install all dependencies with `pip install -r requirements.txt`.
+Install all dependencies with `pip install -r requirements.txt`
+
+Fetch the submodule data - `git submodule update --init --recursive`
+
+**Autmatically:**
 
 With `setup.sh`:
 
