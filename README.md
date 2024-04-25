@@ -22,7 +22,7 @@ Install all dependencies with `pip install -r requirements.txt`
 
 Fetch the submodule data - `git submodule update --init --recursive`
 
-**Autmatically:**
+**Automatically:**
 
 With `setup.sh`:
 
@@ -84,4 +84,4 @@ https://github.com/tintinweb/bugbounty-companion
 
 ## End
 
-Contact on Twitter for paid work. Blockchain engineering, security, automation. Python, Solidity, JS, and TS focus.
+I am for hire, contact on Twitter. Protocol & Blockchain engineering (dev / security / tools / oss). Python, Solidity, JS, and TS focus (in such order).
