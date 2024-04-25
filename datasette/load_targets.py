@@ -229,7 +229,7 @@ def insert_nested_data(cursor, bounty_id, bounty):
     
         if "tags" in bounty:
             for tag_type, tag_values in bounty["tags"].items():
-                if tag_values is not None:  # Add this check
+                if tag_values is not None:
                     for tag_value in tag_values:
                         cursor.execute(
                             """
