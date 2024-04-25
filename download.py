@@ -76,7 +76,7 @@ def sort_targets(targets):
     return repo_targets, file_targets, network_targets, error_targets
 
 
-def clean_crytic_directory():
+def clean_crytic_directory(target):
     crytic_path = os.path.join(output_dir, "etherscan-contracts")
 
     for contract_item in os.listdir(crytic_path):
@@ -86,13 +86,19 @@ def clean_crytic_directory():
             continue
 
         try:
-            address_from_dir, target_name_from_dir = contract_item.split("-", 1)
+            _, target_name_from_dir = contract_item.split("-", 1)
             if "-" in target_name_from_dir:
                 _, contract_name = target_name_from_dir.rsplit("-", 1)
             else:
                 contract_name = target_name_from_dir
 
-            target_output = os.path.join(output_dir, address_from_dir)
+            target_output = os.path.join(output_dir, f"{target}:{target_name_from_dir}")
+            
+            if os.path.exists(target_output):
+                shutil.rmtree(crytic_path)
+                print(f"Directory {target_output} already exists. Skipping.")
+                continue
+            
             os.mkdir(target_output)
 
             if os.path.isfile(contract_item_path):
@@ -123,7 +129,7 @@ def clean_crytic_directory():
 
 def download_source(targets):
     repo_targets, file_targets, network_targets, error_targets = sort_targets(targets)
-    print(f"Downloading {len(repo_targets)} repositories")
+
     # deque to hold the timestamps of the last 5 requests
     timestamps = deque(maxlen=5)
 
@@ -157,12 +163,11 @@ def download_source(targets):
         timestamps.append(time.time())
 
         try:
-            print(f"Downloading {target}")
             crytic_object = CryticCompile(target, export_dir=output_dir)
             if crytic_object.bytecode_only:
                 raise Exception("Error: Bytecode only accessible")
             else:
-                clean_crytic_directory()
+                clean_crytic_directory(target)
         except Exception as e:
             raise Exception(f"Error network_targets: {e}")
 
@@ -185,7 +190,6 @@ if __name__ == "__main__":
 
     if args.target:
         targets = [args.target]
-        print("targets", targets)
     elif args.csv:
         targets = get_targets_from_csv(args.csv)
     else:
