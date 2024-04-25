@@ -10,11 +10,21 @@ The only crypto bug bounty terminal you'll ever need.
 6. Guaranteed compilation of on-chain targets with *patched* crytic-compile.
 7. Publish your data with Datasette.
 
+Live demo: 
+
 ## Installation
+
+Manually:
 
 Create a new Python environment, e.g., `python3 -m venv venv`.
 
 Install all dependencies with `pip install -r requirements.txt`.
+
+With `setup.sh`:
+
+`chmod +x setup.sh`
+
+`./setup.sh`
 
 ## Running the Dashboard
 
