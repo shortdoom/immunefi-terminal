@@ -14,13 +14,15 @@ The only crypto bug bounty terminal you'll ever need.
 
 Create a new Python environment, e.g., `python3 -m venv venv`.
 
-Install all dependencies with `pip install requirements.txt`.
+Install all dependencies with `pip install -r requirements.txt`.
 
 ## Running the Dashboard
 
 Execute `python run.py` to initialize the database. This will serve you a dashboard at `127.0.0.1:8001`.
 
-If `immunefi_data.db` is already present, `run.py` will look for new updates to insert. 
+If `immunefi_data.db` is already present, `run.py` will look for new updates to insert.
+
+You can inspect new updates in `updates` table or by checking `git diff` / `git log` inside of the `targets` directory.
 
 ## Running the Downloader
 
