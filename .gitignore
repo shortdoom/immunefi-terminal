@@ -1,7 +1,7 @@
 .env
 .vscode
 __pycache__
-out
+files/*
 venv
-datasette/*.db
-datasette/*.csv
+*.db
+*.csv

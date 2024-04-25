@@ -30,4 +30,3 @@ projects_directory = os.path.join(parent_directory, 'targets')
 
 # Execute the git pull command in the specified directory
 execute_git_pull(projects_directory)
-# execute_load_targets()

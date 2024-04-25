@@ -8,7 +8,7 @@
       },
       "queries": {
         "SELECT_DATE_RANGE": {
-          "sql": "SELECT a.id, a.bountyId, a.type, a.url, a.description, a.isPrimacyOfImpact, b.updatedDate FROM assets a JOIN bounties b ON a.bountyId = b.bountyId WHERE b.updatedDate BETWEEN :start_date AND :end_date;",
+          "sql": "SELECT a.id, a.bountyId, a.type, a.url, a.description, b.updatedDate FROM assets a JOIN bounties b ON a.bountyId = b.bountyId WHERE b.updatedDate BETWEEN :start_date AND :end_date;",
           "description": "Show data for targets updated between specified dates"
         },
         "TARGETS_ONCHAIN_COUNT": {
