@@ -26,7 +26,14 @@ Args:
 """
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
-output_dir = os.path.join(script_dir, "files")
+parent_dir = os.path.dirname(script_dir)
+
+# NOTE: external integration
+if os.path.exists(os.path.join(parent_dir, "core")):
+    output_dir = os.path.join(parent_dir, "core", "files", "out")
+else:
+    output_dir = os.path.join(script_dir, "files")
+    
 db_path = os.path.join(script_dir, "datasette/immunefi_data.db")
 
 
