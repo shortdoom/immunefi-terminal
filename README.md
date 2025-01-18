@@ -22,7 +22,7 @@ Install all dependencies with `pip install -r requirements.txt`
 
 Fetch the submodule data - `git submodule update --init --recursive`
 
-**Autmatically:**
+**Automatically:**
 
 With `setup.sh`:
 
@@ -42,13 +42,16 @@ You can inspect new updates in `updates` table or by checking `git diff` / `git 
 
 ## Running the Downloader
 
+
 `python download.py` takes three arguments:
 
 `python download.py --bountyId <name> --target <network>:<address> --csv /path/to/targets.csv`
 
 `bountyId`: Download all targets for a specific bountyId (from SQLite database).
 
-`target`: Download single `<network>:<address>` target source code (for convenience).
+### `target` argument is broken due to changes in Etherscan API
+
+`target`: Download single `<network>:<address>` target source code (for convenience). 
 
 `csv`: Download from a CSV file containing targets (single column with list of `<network>:<address>`).
 

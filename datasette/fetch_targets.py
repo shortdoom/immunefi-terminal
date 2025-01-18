@@ -15,7 +15,7 @@ def execute_git_pull(projects_directory):
 
 def execute_load_targets():
     os.chdir(datasette_directory)
-    subprocess.run(['python', 'load_targets.py'])
+    subprocess.run(['python3', 'load_targets.py'])
 
 # Specify the directory
 # Get the directory of the current script

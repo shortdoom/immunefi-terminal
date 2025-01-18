@@ -1,11 +1,13 @@
 import os
-import argparse
 import subprocess
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 def main():
-    subprocess.run(["python", "datasette/fetch_targets.py"])
-    os.chdir("datasette")
+    datasette_dir = os.path.join(script_dir, "datasette")
+    os.chdir(datasette_dir)
+    subprocess.run(["python3", "fetch_targets.py"])
     subprocess.run(
         [
             "datasette",
@@ -18,6 +20,7 @@ def main():
             "2000",
         ]
     )
+
 
 if __name__ == "__main__":
     main()
