@@ -28,12 +28,11 @@ Args:
 script_dir = os.path.dirname(os.path.realpath(__file__))
 parent_dir = os.path.dirname(script_dir)
 
-# NOTE: external integration
+# NOTE: XXXX project integration
 if os.path.exists(os.path.join(parent_dir, "core")):
     output_dir = os.path.join(parent_dir, "core", "files", "out")
 else:
     output_dir = os.path.join(script_dir, "files")
-    
 db_path = os.path.join(script_dir, "datasette/immunefi_data.db")
 
 
@@ -100,12 +99,12 @@ def clean_crytic_directory(target):
                 contract_name = target_name_from_dir
 
             target_output = os.path.join(output_dir, f"{target}:{target_name_from_dir}")
-            
+
             if os.path.exists(target_output):
                 shutil.rmtree(crytic_path)
                 print(f"Directory {target_output} already exists. Skipping.")
                 continue
-            
+
             os.mkdir(target_output)
 
             if os.path.isfile(contract_item_path):
@@ -134,7 +133,8 @@ def clean_crytic_directory(target):
             raise Exception(f"Error processing {contract_item}: {e}")
 
 
-def download_source(targets):
+def download_source(targets, api_key=None):
+
     repo_targets, file_targets, network_targets, error_targets = sort_targets(targets)
 
     # deque to hold the timestamps of the last 5 requests
@@ -168,6 +168,12 @@ def download_source(targets):
         if len(timestamps) == 5:
             timestamps.popleft()
         timestamps.append(time.time())
+
+        if not api_key:
+            try:
+                api_key = os.getenv("ETHERSCAN_API_KEY")
+            except Exception as e:
+                raise Exception(f"Error: ETHERSCAN_API_KEY required: {e}")
 
         try:
             crytic_object = CryticCompile(target, export_dir=output_dir)
