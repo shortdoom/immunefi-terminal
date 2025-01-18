@@ -33,7 +33,6 @@ if os.path.exists(os.path.join(parent_dir, "core")):
     output_dir = os.path.join(parent_dir, "core", "files", "out")
 else:
     output_dir = os.path.join(script_dir, "files")
-
 db_path = os.path.join(script_dir, "datasette/immunefi_data.db")
 
 

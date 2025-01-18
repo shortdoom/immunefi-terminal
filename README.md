@@ -87,4 +87,4 @@ https://github.com/tintinweb/bugbounty-companion
 
 ## End
 
-Contact on Twitter for paid work. Blockchain engineering, security, automation. Python, Solidity, JS, and TS focus.
+I am for hire, contact on Twitter. Protocol & Blockchain engineering (dev / security / tools / oss). Python, Solidity, JS, and TS focus (in such order).

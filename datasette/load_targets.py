@@ -147,22 +147,21 @@ def insert_nested_data(cursor, bounty_id, bounty):
                     item.get("severity"),
                 ),
             )
-
-        if "tags" in bounty:
-            for tag_type, tag_values in bounty["tags"].items():
-                if tag_values is not None:
-                    for tag_value in tag_values:
-                        cursor.execute(
-                            """
-                            INSERT INTO tags (bountyId, tag_type, tag_value)
-                            VALUES (?, ?, ?)
-                            """,
-                            (
-                                bounty_id,
-                                tag_type,
-                                tag_value,
-                            ),
-                        )
+    if "tags" in bounty:
+        for tag_type, tag_values in bounty["tags"].items():
+            if tag_values is not None:
+                for tag_value in tag_values:
+                    cursor.execute(
+                        """
+                        INSERT INTO tags (bountyId, tag_type, tag_value)
+                        VALUES (?, ?, ?)
+                        """,
+                        (
+                            bounty_id,
+                            tag_type,
+                            tag_value,
+                        ),
+                    )
 
 
 def update_nested_data(cursor, bounty_id, bounty):

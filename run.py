@@ -3,7 +3,6 @@ import subprocess
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
-
 def main():
     datasette_dir = os.path.join(script_dir, "datasette")
     os.chdir(datasette_dir)
